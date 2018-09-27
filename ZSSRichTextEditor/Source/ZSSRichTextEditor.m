@@ -1939,6 +1939,18 @@ static CGFloat kDefaultScale = 0.5;
         
         [UIView animateWithDuration:duration delay:0 options:animationOptions animations:^{
             
+            // consider tab bar height if we're used in a UITabBar
+            UIViewController *parent = self.parentViewController;
+            while (parent && ![parent respondsToSelector:@selector(tabBar)]) {
+                parent = parent.parentViewController;
+            }
+            CGFloat tabbarHeight = 0.f;
+            
+            if ([parent respondsToSelector:@selector(tabBar)]) {
+                UITabBar *tabBar = [parent valueForKey:@"tabBar"];
+                tabbarHeight = tabBar.frame.size.height;
+            }
+            
             // Toolbar
             CGRect frame = self.toolbarHolder.frame;
             frame.origin.y = self.view.frame.size.height - (keyboardHeight + sizeOfToolbar);
